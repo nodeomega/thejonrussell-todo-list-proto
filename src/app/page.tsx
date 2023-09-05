@@ -1,3 +1,4 @@
+'use client'
 import Image from 'next/image'
 import Link from 'next/link'
 import ToDoList from './components/todo-list/todo-list'
@@ -9,9 +10,21 @@ export default function Home() {
   //Set up SWR to run the fetcher function when calling "/api/staticdata"
   //There are 3 possible states: (1) loading when data is null (2) ready when the data is returned (3) error when there was an error fetching the data
   const { data, error } = useSWR('/api/staticdata', fetcher);
+  // const makeRequest = async () => {
+  //   try {
+  //     const { data, error } = await fetch('/api/staticdata').then((res) => res.json());
+  //   } catch (e) {
+  
+  //   }  
+  // }
+
+  // const { data, error } = fetch('/api/staticdata').then((res) => res.json());
 
   //Handle the error state
-  if (error) return <div>Failed to load</div>;
+  if (error) {
+    console.log(error);
+    return <div>Failed to load</div>
+  };
   //Handle the loading state
   if (!data) return <div>Loading...</div>;
 
