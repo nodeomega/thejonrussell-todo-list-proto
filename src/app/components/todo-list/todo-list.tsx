@@ -7,10 +7,17 @@ type Props = {
 }
 
 const ToDoList: React.FC<Props> = ({ data }) => { 
-  //const [isSelected, setIsSelected] = React.useState(false);
+  const tabNames = {todoList: "TodoList", defaultSubtasks: "DefaultSubtasks"};
+
+
   const [isClicked, setIsClicked] = React.useState(false);
+  const [activeTabName, setActiveTabName] = React.useState(tabNames.todoList);
 
   const [todoItems, setTodoItems] = React.useState<ShopifyToDoItemList>({tasks: data.tasks, defaultSubtasks: data.defaultSubtasks});
+
+  function ClickTab(tab: string) {
+   setActiveTabName(tab); 
+  }
 
   function ClickItem() {
 
@@ -39,25 +46,44 @@ const ToDoList: React.FC<Props> = ({ data }) => {
   console.log(todoItems);
 
   return (
-    <main>
-      <h1 className="center">
+    <main className="w-full">
+      <h1 className="text-center">
         To-Do List Demo
-      </h1>      
+      </h1>
       <div>
-        <h2>
-          {"Default Subtasks"}
-        </h2>
-        <ul className="grid grid-cols-3">
-        {todoItems.defaultSubtasks.map((st: string, si: number) => {
-          console.log(st);
-          return (
-            <li key={si} className={`p-3 m-2 ${si % 2 === 0 ? "bg-indigo-900" : "bg-violet-900"} rounded-full text-center`}>
-              { st }
-            </li>
-          )
-        })}
-        </ul>
+        <div className="flex justify-start gap-2">
+          <button 
+            className={`rounded-full px-2 ${activeTabName == tabNames.todoList ? 'bg-amber-500 text-black' : 'bg-amber-900 text-white'}`}
+            onClick={() => ClickTab(tabNames.todoList)}>
+            {"Todo List"}
+          </button>
+          <button 
+            className={`rounded-full px-2 ${activeTabName == tabNames.defaultSubtasks ? 'bg-amber-500 text-black' : 'bg-amber-900 text-white'}`}
+            onClick={() => ClickTab(tabNames.defaultSubtasks)}>
+            {"Default Subtasks"}
+          </button>
+        </div>
       </div>
+      {activeTabName === tabNames.defaultSubtasks && (
+      <div>
+        <div>
+          <h2>
+            {"Default Subtasks"}
+          </h2>
+          <ul className="grid grid-cols-3">
+          {todoItems.defaultSubtasks.map((st: string, si: number) => {
+            console.log(st);
+            return (
+              <li key={si} className={`p-3 m-2 ${si % 2 === 0 ? "bg-indigo-900" : "bg-violet-900"} rounded-full text-center`}>
+                { st }
+              </li>
+            )
+          })}
+          </ul>
+        </div>
+      </div>
+      )}
+      {activeTabName === tabNames.todoList && (
       <div>
         <h2>
           {"Example: Shopify Store Tasks"}
@@ -123,6 +149,7 @@ const ToDoList: React.FC<Props> = ({ data }) => {
           })}
         </ul>
       </div>
+      )}
     </main>
   )
   }
