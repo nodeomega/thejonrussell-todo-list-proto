@@ -1,5 +1,5 @@
 export default interface ToDoItem {
   name: string,
-  completed: boolean | undefined,
-  subtasks: ToDoItem[] | undefined | null
+  completed?: boolean | undefined,
+  subtasks?: ToDoItem[] | undefined | null
 }

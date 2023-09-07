@@ -18,12 +18,12 @@ export async function PUT(req: NextRequest) {
   //console.log(await req.json());
   const json = await req.json();
   const todoItems:ShopifyToDoItemList = json.todoItems
-  console.log(todoItems);
+  // Save the file.
   saveToDoState(todoItems);
-  return NextResponse.json({foo: "BAR!!!"});
-  
-  // update = req.
-  // saveToDoState(update);
+  //Read the json data file data.json
+  const fileContents = await fs.readFile(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', 'utf8');
+  //Return the content of the data file in json format
+  return NextResponse.json(JSON.parse(fileContents));  
 }
 
 function saveToDoState(data: ShopifyToDoItemList) {

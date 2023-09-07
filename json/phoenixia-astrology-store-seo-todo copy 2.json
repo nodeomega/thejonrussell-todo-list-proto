@@ -1,5 +1,5 @@
 {
-  "items": [
+  "tasks": [
     {
       "name": "Dark Tredecim - Circle - Vesta - White glossy mug",
       "completed": true
@@ -30,10 +30,26 @@
     },
     {
       "name": "Dark Tredecim - Circle - Juno - Short-sleeve unisex t-shirt (dark)",
-      "subtasks": [{"name": "Create Women's Tank Top"}]
+      "subtasks": [
+        {
+          "name": "Create Women's Tank Top",
+          "completed": true
+        }
+      ]
     },
     {
       "name": "Dark Tredecim - Circle - Juno - Short-sleeve unisex t-shirt (light)"
     }
+  ],
+  "defaultSubtasks": [
+    "Rename item if required",
+    "Fix SEO if required",
+    "Create light-colored unisex t-shirt",
+    "Create dark-colored unisex t-shirt",
+    "Create Women's Tank Top for Light/White Text",
+    "Create Women's Tank Top for Black/Dark Text",
+    "Create Women's Crop Hoodie for white/light text",
+    "Create 3/4 sleeve raglan shirt",
+    "Create white ceramic mug"    
   ]
 }
