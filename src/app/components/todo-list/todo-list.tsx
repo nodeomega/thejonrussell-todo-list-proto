@@ -1,7 +1,6 @@
 import ShopifyToDoItemList from "@/app/models/shopify-todo-item-list";
 import ToDoItem from "@/app/models/todo-item";
 import React from "react";
-import {PUT as UpdateListing} from '@/app/api/staticdata/route';
 
 type Props = {
   data: any
@@ -11,7 +10,7 @@ const ToDoList: React.FC<Props> = ({ data }) => {
   //const [isSelected, setIsSelected] = React.useState(false);
   const [isClicked, setIsClicked] = React.useState(false);
 
-  const [todoItems, setTodoItems] = React.useState<ShopifyToDoItemList>({tasks: data.tasks});
+  const [todoItems, setTodoItems] = React.useState<ShopifyToDoItemList>({tasks: data.tasks, defaultSubtasks: data.defaultSubtasks});
 
   function ClickItem() {
 
@@ -41,13 +40,28 @@ const ToDoList: React.FC<Props> = ({ data }) => {
 
   return (
     <main>
+      <h1 className="center">
+        To-Do List Demo
+      </h1>      
       <div>
-        {"placeholder text"}
+        <h2>
+          {"Default Subtasks"}
+        </h2>
+        <ul className="grid grid-cols-3">
+        {todoItems.defaultSubtasks.map((st: string, si: number) => {
+          console.log(st);
+          return (
+            <li key={si} className={`p-3 m-2 ${si % 2 === 0 ? "bg-indigo-900" : "bg-violet-900"} rounded-full text-center`}>
+              { st }
+            </li>
+          )
+        })}
+        </ul>
       </div>
       <div>
-        <h1>
-          {"To-Do Prototype - Shopify Store Tasks"}
-        </h1>
+        <h2>
+          {"Example: Shopify Store Tasks"}
+        </h2>
         <ul>
           {todoItems.tasks.map((item: ToDoItem, index: number) => {
             console.log(item.subtasks);
@@ -58,9 +72,9 @@ const ToDoList: React.FC<Props> = ({ data }) => {
             }            
             return (
               <li key={index}>
-                <ul className="flex gap-2">
+                <ul className="grid grid-cols-2 gap-2 bg-slate-800 rounded-lg my-2 p-1 items-center">
                   <li>{item.name}</li>
-                  <li>
+                  <li className="items-center justify-between">
                     <input
                       type="checkbox"
                       name="completed"
@@ -69,8 +83,6 @@ const ToDoList: React.FC<Props> = ({ data }) => {
                       readOnly={item.completed}
                       className="rounded"
                       />                    
-                  </li>
-                  <li>
                     <button
                       className="bg-fuchsia-950 hover:bg-cyan-600 accent-pink-500 rounded-full px-2"
                       onClick={() => setIsClicked(true)}
@@ -80,11 +92,11 @@ const ToDoList: React.FC<Props> = ({ data }) => {
                   </li>
                   {item.subtasks && (item.subtasks as ToDoItem[]).map((i: any, ind: number) => {
                     return (
-                      <li key={ind}>
-                        <ul>                          
+                      <li className="col-span-2 items-center p-2" key={ind}>
+                        <ul className={`grid grid-cols-2 rounded-md border-4 ${i.completed ? "bg-green-800 border-green-700" : "bg-red-800 border-red-700"}  ml-2 my-1 items-center`}>
                           <li>
                             {i.name}
-                          </li>
+                          </li>                          
                           <li>
                             <input
                               type="checkbox"
@@ -94,13 +106,11 @@ const ToDoList: React.FC<Props> = ({ data }) => {
                               readOnly={i.completed}
                               className="rounded"
                               />                    
-                          </li>
-                          <li>
                             <button
                               className="bg-red-950 hover:bg-blue-600 rounded-full px-2"
                               onClick={() => ClickSubitem(item, i)}
                               name="subwriteTest">
-                              {isClicked ? "Yay!" : "Click" }
+                              { "Update"}
                             </button>
                           </li>
                         </ul>

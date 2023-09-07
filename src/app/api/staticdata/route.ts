@@ -4,11 +4,10 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
 import ShopifyToDoItemList from '@/app/models/shopify-todo-item-list';
 
+//Set the absolute path of the json directory
 const jsonDirectory = path.join(process.cwd(), 'json');
 
 export async function GET(req: NextRequest) { //, res: NextApiResponse) {
-  //Find the absolute path of the json directory
-  //const jsonDirectory = path.join(process.cwd(), 'json');
   //Read the json data file data.json
   const fileContents = await fs.readFile(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', 'utf8');
   //Return the content of the data file in json format
