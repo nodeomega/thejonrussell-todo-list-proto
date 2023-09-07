@@ -13,14 +13,28 @@ export default function Home() {
   
   //Handle the error state
   if (error) {
-    console.log(error);
+    console.error(error);
     return <div>Failed to load</div>
   };
   //Handle the loading state
   if (!data) return <div>Loading...</div>;
 
+  fetch('/api/staticdata', {
+    method: 'GET',
+    headers: {
+      'Content-type': 'application/json',
+    }
+  })
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <Link href="/about">About</Link>
       </div>
