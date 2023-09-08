@@ -3,7 +3,7 @@ import ToDoItem from "@/app/models/todo-item";
 import React from "react";
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
-import { faBan, faCheckCircle, faCircle, faTrash, faTrashCan, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faCheckCircle, faCircle, faInfoCircle, faTrash, faTrashCan, faWarning, faXmarkCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 config.autoAddCss = false
 
@@ -19,6 +19,7 @@ const ToDoList: React.FC<Props> = ({ data }) => {
   const [activeTabName, setActiveTabName] = React.useState(tabNames.todoList);
   const [addTaskVisible, setAddTaskVisible] = React.useState(true);
   const [addTaskName, setAddTaskName] = React.useState("");
+  const [deleteTaskActive, setDeleteTaskActive] = React.useState<ToDoItem>();
   const [deleteSubtaskActive, setDeleteSubtaskActive] = React.useState<ToDoItem>();
 
   const [todoItems, setTodoItems] = React.useState<ShopifyToDoItemList>({tasks: data.tasks, defaultSubtasks: data.defaultSubtasks});
@@ -31,7 +32,7 @@ const ToDoList: React.FC<Props> = ({ data }) => {
    setActiveTabName(tab); 
   }
 
-  function ClickItem(item: ToDoItem) {
+  function ToggleItemComplete(item: ToDoItem) {
     item.completed = !item.completed ?? true;
     //UpdateListing(todoItems);
     fetch('/api/staticdata', {
@@ -72,23 +73,40 @@ const ToDoList: React.FC<Props> = ({ data }) => {
     });
   }
 
+  function DeleteItem(item: ToDoItem) {
+    // Find the item of the subtask if it exists, and remove it.
+    // We're just removing the one subitem from one task, so splice is fastest.
+    let delIndex = todoItems.tasks?.indexOf(item);
+    if (delIndex || delIndex === 0) {
+      todoItems.tasks?.splice(delIndex, 1);
+    }
+   
+    fetch('/api/staticdata', {
+      method: 'DELETE',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({todoItems}),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      setTodoItems({tasks: data.tasks, defaultSubtasks: data.defaultSubtasks});
+      setDeleteTaskActive(undefined)
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
   function DeleteSubitem(item: ToDoItem, subitem: ToDoItem) {
     // Find the item of the subtask if it exists, and remove it.
     // We're just removing the one subitem from one task, so splice is fastest.
-    console.log("Begin delete");
-    console.log(item);
-    console.log(subitem);
     let delIndex = item.subtasks?.indexOf(subitem);
-    console.log(delIndex);
     if (delIndex || delIndex === 0) {
       item.subtasks?.splice(delIndex, 1);
     }
-    
-    console.log(item);
-    console.log("End delete");
-    
-    console.log(todoItems);
-    //UpdateListing(todoItems);
+   
     fetch('/api/staticdata', {
       method: 'DELETE',
       headers: {
@@ -156,27 +174,29 @@ const ToDoList: React.FC<Props> = ({ data }) => {
         </div>
       </div>
       {activeTabName === tabNames.defaultSubtasks && (
-      <div>
-        <div>
-          <h2>
-            {"Default Subtasks"}
-          </h2>
-          <ul className="grid grid-cols-3">
-          {todoItems.defaultSubtasks.map((st: string, si: number) => {
-            console.log(st);
-            return (
-              <li key={si} className={`p-3 m-2 ${si % 2 === 0 ? "bg-indigo-900" : "bg-violet-900"} rounded-full text-center`}>
-                { st }
-              </li>
-            )
-          })}
-          </ul>
+      <div className="my-3">
+        <h2>
+          {"Default Subtasks"}
+        </h2>
+        <div className="w-full border-2 border-yellow-700 text-lg p-2 m-2">
+          <FontAwesomeIcon icon={faInfoCircle} className="text-blue-400"></FontAwesomeIcon>
+          {" These are read-only."}
         </div>
+        <ul className="grid grid-cols-3">
+        {todoItems.defaultSubtasks.map((st: string, si: number) => {
+          console.log(st);
+          return (
+            <li key={si} className={`p-3 m-2 ${si % 2 === 0 ? "bg-indigo-900" : "bg-violet-900"} rounded-full text-center`}>
+              { st }
+            </li>
+          )
+        })}
+        </ul>
       </div>
       )}
       {activeTabName === tabNames.todoList && (
-      <div>
-        <h2>
+      <div className="my-3">
+        <h2 className="my-3">
           {"Example: Shopify Store Tasks"}
         </h2>
         {addTaskVisible && (
@@ -213,14 +233,44 @@ const ToDoList: React.FC<Props> = ({ data }) => {
                   <li className="items-center justify-between">
                     <button
                       className="bg-fuchsia-950 hover:bg-cyan-600 accent-pink-500 rounded-full px-2"
-                      onClick={() => ClickItem(item)}
+                      onClick={() => ToggleItemComplete(item)}
                       name="writeTest">
-                        <FontAwesomeIcon icon={item.completed ? faCheckCircle : faXmarkCircle}></FontAwesomeIcon> 
-                        { ` ${!item.completed ? "Mark as Completed" : "Unmark as Completed"}`}
+                        <FontAwesomeIcon icon={!item.completed ? faCheckCircle : faXmarkCircle}></FontAwesomeIcon> 
+                        { ` ${!item.completed ? "Mark Complete" : "Mark Incomplete"}`}
                     </button>
+                    {(!deleteTaskActive || deleteTaskActive !== item) ?
+                              (
+                                <button
+                                className="bg-red-700 hover:bg-blue-600 rounded-full px-2"
+                                onClick={() => setDeleteTaskActive(item)}
+                                name="subwriteTest">
+                                  <FontAwesomeIcon icon={faBan}></FontAwesomeIcon> 
+                                  { ` Delete Task`}
+                              </button>
+                            ) : (
+                              <div className="grid grid-cols-2">
+                                <button
+                                  className="bg-red-700 hover:bg-blue-600 rounded-full px-2"
+                                  onClick={() => DeleteItem(item)}
+                                  name="subwriteTest">
+                                    <FontAwesomeIcon icon={faBan}></FontAwesomeIcon> 
+                                    { ` Confirm Delete`}
+                                </button>
+                                <button
+                                  className="bg-blue-700 hover:bg-blue-600 rounded-full px-2"
+                                  onClick={() => setDeleteTaskActive(undefined)}
+                                  name="subwriteTest">
+                                    <FontAwesomeIcon icon={faBan}></FontAwesomeIcon> 
+                                    { ` Cancel Delete`}
+                                </button>
+                                <div className="col-span-2 bg-black text-red-500 text-center m-2 font-bold border-2 border-red-500 text-lg">
+                                  <FontAwesomeIcon icon={faWarning}></FontAwesomeIcon>
+                                  {" Associated subtasks will also be deleted."}
+                                </div>
+                            </div>
+                            )}
                   </li>
                   {item.subtasks && (item.subtasks as ToDoItem[]).map((i: any, ind: number) => {
-                    // independent states for if delete is pressed.
                     return (
                       <li className="col-span-2 items-center p-0" key={ind}>
                         <ul className={`grid grid-cols-2 rounded-md border-4 ${i.completed ? "bg-green-950 border-green-700" : "bg-red-950 border-red-700"}  ml-2 my-1 items-center`}>
@@ -235,7 +285,7 @@ const ToDoList: React.FC<Props> = ({ data }) => {
                                 <FontAwesomeIcon icon={i.completed ? faCheckCircle : faXmarkCircle}></FontAwesomeIcon> 
                                 { ` ${!i.completed ? "Mark Done" : "Mark Undone"}`}
                             </button>
-                            {(!deleteSubtaskActive && deleteSubtaskActive !== i) ?
+                            {(!deleteSubtaskActive || deleteSubtaskActive !== i) ?
                               (
                                 <button
                                 className="bg-red-700 hover:bg-blue-600 rounded-full px-2"

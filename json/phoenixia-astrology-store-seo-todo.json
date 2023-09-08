@@ -39,55 +39,6 @@
     },
     {
       "name": "Dark Tredecim - Circle - Juno - Short-sleeve unisex t-shirt (light)"
-    },
-    {
-      "name": "Dark Tredecim - TEST",
-      "subtasks": [
-        {
-          "name": "Rename item if required",
-          "completed": true
-        },
-        {
-          "name": "Create light-colored unisex t-shirt",
-          "completed": true
-        },
-        {
-          "name": "Create dark-colored unisex t-shirt",
-          "completed": true
-        },
-        {
-          "name": "Create Women's Tank Top for Light/White Text",
-          "completed": true
-        },
-        {
-          "name": "Create Women's Tank Top for Black/Dark Text"
-        },
-        {
-          "name": "Create Women's Crop Hoodie for white/light text"
-        },
-        {
-          "name": "Create white ceramic mug",
-          "completed": true
-        }
-      ]
-    },
-    {
-      "name": "Foo",
-      "subtasks": [
-        {
-          "name": "Create 3/4 sleeve raglan shirt"
-        }
-      ],
-      "completed": true
-    },
-    {
-      "name": "Bar",
-      "subtasks": [
-        {
-          "name": "Fix SEO if required",
-          "completed": false
-        }
-      ]
     }
   ],
   "defaultSubtasks": [
@@ -99,6 +50,6 @@
     "Create Women's Tank Top for Black/Dark Text",
     "Create Women's Crop Hoodie for white/light text",
     "Create 3/4 sleeve raglan shirt",
-    "Create white ceramic mug"
+    "Create white ceramic mug"    
   ]
 }
