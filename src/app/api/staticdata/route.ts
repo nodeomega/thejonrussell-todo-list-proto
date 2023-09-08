@@ -6,10 +6,11 @@ import ShopifyToDoItemList from '@/app/models/shopify-todo-item-list';
 
 //Set the absolute path of the json directory
 const jsonDirectory = path.join(process.cwd(), 'json');
+const fileName = "/demo-todo.json";
 
 export async function GET(req: NextRequest) { //, res: NextApiResponse) {
   //Read the json data file data.json
-  const fileContents = await fs.readFile(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', 'utf8');
+  const fileContents = await fs.readFile(jsonDirectory + fileName, 'utf8');
   //Return the content of the data file in json format
   return NextResponse.json(JSON.parse(fileContents));
 }
@@ -21,11 +22,24 @@ export async function PUT(req: NextRequest) {
   // Save the file.
   saveToDoState(todoItems);
   //Read the json data file data.json
-  const fileContents = await fs.readFile(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', 'utf8');
+  const fileContents = await fs.readFile(jsonDirectory + fileName, 'utf8');
+  //Return the content of the data file in json format
+  return NextResponse.json(JSON.parse(fileContents));  
+}
+
+export async function DELETE(req: NextRequest) {
+  // Ideally, we would have an actual API call that would delete the item on the backend.
+  // For the purposes of this demo, we just remove the subtask and resave the JSON file.
+  const json = await req.json();
+  const todoItems:ShopifyToDoItemList = json.todoItems
+  // Save the file.
+  saveToDoState(todoItems);
+  //Read the json data file data.json
+  const fileContents = await fs.readFile(jsonDirectory  + fileName, 'utf8');
   //Return the content of the data file in json format
   return NextResponse.json(JSON.parse(fileContents));  
 }
 
 function saveToDoState(data: ShopifyToDoItemList) {
-  writeFileSync(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', JSON.stringify(data, null, 2), 'utf8');
+  writeFileSync(jsonDirectory + fileName, JSON.stringify(data, null, 2), 'utf8');
 }
