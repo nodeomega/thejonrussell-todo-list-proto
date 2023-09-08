@@ -26,6 +26,19 @@ export async function PUT(req: NextRequest) {
   return NextResponse.json(JSON.parse(fileContents));  
 }
 
+export async function DELETE(req: NextRequest) {
+  // Ideally, we would have an actual API call that would delete the item on the backend.
+  // For the purposes of this demo, we just remove the subtask and resave the JSON file.
+  const json = await req.json();
+  const todoItems:ShopifyToDoItemList = json.todoItems
+  // Save the file.
+  saveToDoState(todoItems);
+  //Read the json data file data.json
+  const fileContents = await fs.readFile(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', 'utf8');
+  //Return the content of the data file in json format
+  return NextResponse.json(JSON.parse(fileContents));  
+}
+
 function saveToDoState(data: ShopifyToDoItemList) {
   writeFileSync(jsonDirectory + '/phoenixia-astrology-store-seo-todo.json', JSON.stringify(data, null, 2), 'utf8');
 }
