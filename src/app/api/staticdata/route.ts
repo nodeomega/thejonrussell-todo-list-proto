@@ -6,7 +6,7 @@ import ShopifyToDoItemList from '@/app/models/shopify-todo-item-list';
 
 //Set the absolute path of the json directory
 const jsonDirectory = path.join(process.cwd(), 'json');
-const tmpDirectory = path.join(process.cwd(), 'tmp');
+const tmpDirectory = path.join('./tmp');
 const fileName = "/demo-todo.json";
 
 export async function GET(req: NextRequest) { //, res: NextApiResponse) {
